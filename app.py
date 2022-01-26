@@ -147,7 +147,11 @@ def main():
     st.success(result)
     if st.button("About"):
         st.text("Heart Disease Predictor")
-        st.text("Final Year Project")
+        st.text("Final Year Project Submited By:")
+        st.text("Muskan Khatwani 1NT18IS202")
+        st.text("Anubhav Yadav 1NT18CS017")
+        st.text("Neha V M 1NT18CS106")
+        st.text("Kinshuk Chaturvedy 1NT18CS076")
 
 if __name__=='__main__':
     main()
