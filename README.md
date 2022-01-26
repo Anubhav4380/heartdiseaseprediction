@@ -2,7 +2,7 @@
 
 This a final year major project ML Application.
 
-Web App: https://preheart.herokuapp.com/
+Web App: https://heartdiesaseprediction.herokuapp.com/
 
 kaggle
 
