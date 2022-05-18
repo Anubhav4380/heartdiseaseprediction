@@ -14,12 +14,12 @@ import streamlit as st
 
 dirname = os.path.dirname(__file__)
 
-filename = os.path.join(dirname, 'knn.pkl')
+filename = os.path.join(dirname, '..\pickle\knn.pkl')
 
 
 clf = pickle.load(open(filename, 'rb'))
 
-dataset = pd.read_csv(os.path.join(dirname,'heart.csv'))
+dataset = pd.read_csv(os.path.join(dirname,'..\data\heart.csv'))
 
 dataset = pd.get_dummies(dataset, columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal','target'])
 standardScaler = StandardScaler()
@@ -107,6 +107,15 @@ def predict_note_authentication(X):
     return outputstr
 
 
+def scale_input(inpu):
+    test_dataset = pd.DataFrame(inpu, columns=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'])
+
+    test_dataset = pd.get_dummies(test_dataset, columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal'])
+    columns_to_scale = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
+    test_dataset[columns_to_scale] = standardScaler.transform(test_dataset[columns_to_scale])
+    test_dataset = test_dataset.reindex(columns = dataset.columns, fill_value=0)
+    X = test_dataset.drop(['target_0', 'target_1'], axis = 1)
+    return X
 
 def main():
     st.title("Heart Disease Predict")
@@ -129,22 +138,34 @@ def main():
     slope = st.number_input("Slope of the peak exercise ST segment",step=1.,format="%.2f")
     ca = st.number_input("Number of major vessels (0-3) colored by flourosopy",step=1.,format="%.2f")
     thal = st.number_input("Thal",step=1.,format="%.2f")
-
-    inpu = [[age, sex, cp, trestbps, chol, fbs, restecg, thalach,exang, oldpeak, slope, ca, thal]]
-    test_dataset = pd.DataFrame(inpu, columns=['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'])
-
-    test_dataset = pd.get_dummies(test_dataset, columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal'])
-    columns_to_scale = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
-    test_dataset[columns_to_scale] = standardScaler.transform(test_dataset[columns_to_scale])
-    test_dataset = test_dataset.reindex(columns = dataset.columns, fill_value=0)
-
-    #print(test_dataset.columns)
-    X = test_dataset.drop(['target_0', 'target_1'], axis = 1)
-
+    
+    
     result=""
     if st.button("Predict"):
+        inpu = [[age, sex, cp, trestbps, chol, fbs, restecg, thalach,exang, oldpeak, slope, ca, thal]]
+        X = scale_input(inpu)
         result=predict_note_authentication(X)
     st.success(result)
+    result2=""
+    if st.button("Predict From file"):
+        inpu = []
+        flag = False
+        with open("..\input\input.txt", "r+") as f:
+            while True:
+                line = f.readline()
+                if line == '':
+                    break
+                for word in line.split(" "):
+                    if not flag:
+                        flag = True
+                        continue
+                    if flag:
+                        flag = False
+                        inpu.append(float(word))
+        inpu = [inpu]
+        X = scale_input(inpu)
+        result2=predict_note_authentication(X)
+    st.success(result2)
     if st.button("About"):
         st.text("Heart Disease Predictor")
         st.text("Final Year Project Submited By:")

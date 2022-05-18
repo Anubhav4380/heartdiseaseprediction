@@ -1,0 +1,13 @@
+age 34
+sex 0
+cp 30
+trestbps 15
+chol 23
+fbs 10
+restecg 20
+thalach 150
+exang 20
+oldpeak 2.3
+slope 10
+ca 20
+thal 1
