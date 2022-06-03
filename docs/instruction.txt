@@ -1,0 +1,2 @@
+conda activate fyp
+streamlit run app.py
